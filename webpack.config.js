@@ -15,7 +15,8 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env': {
                 NODE_ENV: `'production'`,
-                MJ_APIKEY_PRIVATE: `'2802ded507d359f077fbf0b0f4d3bc6d'`
+                MJ_APIKEY_PRIVATE: `'2802ded507d359f077fbf0b0f4d3bc6d'`,
+                MJ_APIKEY_PUBLIC: `'7424f01cfba2096dec4ac26b2c5cc163'`
             }
         })
     ],
