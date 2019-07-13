@@ -1,5 +1,5 @@
 {
-  "name": "email-service",
+  "name": "emailService",
   "version": "1.0.0",
   "description": "provide the email service",
   "main": "index.js",
