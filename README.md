@@ -7,10 +7,5 @@ Steps to set up:
 
 
 use a postman to send a post request:
-with the parameters in the body:
-{
-"email": "xxxxxx",
-"userName": "xxx",
-"type": "xxx"
-}
+with the json object in the body: { "email": "xxxxxx", "userName": "xxx", "type": "xxx" }
 
