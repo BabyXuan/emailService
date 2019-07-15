@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
-import App from './App.js';
 
-render(<App />, document.getElementById('root'));
+import MailContainer from './mailContainer.js';
+
+render(<MailContainer />, document.getElementById('root'));
 

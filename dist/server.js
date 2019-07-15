@@ -87,8 +87,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_dom_server__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_dom_server___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_react_dom_server__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__emailTemplates_WelcomeEmail__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__emailTemplates_Html__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__emailTemplates_mailContainer__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__emailTemplates_html__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_styled_components__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_styled_components___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_styled_components__);
 
@@ -100,16 +100,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 const port = 3000;
 const server = __WEBPACK_IMPORTED_MODULE_0_express___default()();
-const mailer = __webpack_require__(10);
+const mailer = __webpack_require__(11);
+const bodyParser = __webpack_require__(13);
 
-//entrypoint
+server.use(bodyParser.urlencoded({ extended: false }));
+server.use(bodyParser.json());
+
+//entrypoint:
 
 server.post('/email', (req, res) => {
-    res.set("Content-Type", "application/json");
-    // const {email, userName} = req.body;
-    const email = "xuan.zhu@healthtap.com";
+    res.setHeader("Content-Type", "application/json");
+    console.log('body', req.body);
+    const { email, userName, type } = req.body;
     const sheet = new __WEBPACK_IMPORTED_MODULE_5_styled_components__["ServerStyleSheet"]();
-    const body = Object(__WEBPACK_IMPORTED_MODULE_2_react_dom_server__["renderToString"])(sheet.collectStyles(__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__emailTemplates_WelcomeEmail__["a" /* default */], null))); // <-- collecting styles
+    const body = Object(__WEBPACK_IMPORTED_MODULE_2_react_dom_server__["renderToString"])(sheet.collectStyles(__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__emailTemplates_mailContainer__["a" /* default */], { userName: userName, type: type }))); // <-- collecting styles
     const styles = sheet.getStyleTags(); // <-- getting all the tags from the sheet
     const title = 'Server side Rendering with Styled Components';
     const messageInfo = {
@@ -118,15 +122,16 @@ server.post('/email', (req, res) => {
         fromName: "HealthTap",
         subject: "Welcome to HealthTap"
     };
-    mailer.sendEmail(messageInfo, Object(__WEBPACK_IMPORTED_MODULE_4__emailTemplates_Html__["a" /* default */])({ body, styles, title }));
+    mailer.sendEmail(messageInfo, Object(__WEBPACK_IMPORTED_MODULE_4__emailTemplates_html__["a" /* default */])({ body, styles, title }));
     res.send('{"message":"Email sent."}');
 });
 
 //for local testing:
 // server.get("/", (req, res) => {
-//     console.log("req", req);
+//     res.setHeader("Content-Type", "application/json");
+//     console.log('body', req.body);
 //     const sheet = new ServerStyleSheet();
-//     const body = renderToString(sheet.collectStyles(<WelcomeEmail />)); // <-- collecting styles
+//     const body = renderToString(sheet.collectStyles(<MailContainer />)); // <-- collecting styles
 //     const styles = sheet.getStyleTags(); // <-- getting all the tags from the sheet
 //     const title = 'Server side Rendering with Styled Components';
 //     res.send(
@@ -137,6 +142,7 @@ server.post('/email', (req, res) => {
 //         })
 //     );
 // });
+
 server.listen(port);
 console.log(`Serving at http://localhost:${port}`);
 
@@ -159,8 +165,46 @@ module.exports = require("react-dom/server");
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__header__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__footer__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_styled_components__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_styled_components___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_styled_components__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__emails_welcomeEmail__ = __webpack_require__(6);
+
+
+
+
+
+// Our single Styled Component definition
+const Container = __WEBPACK_IMPORTED_MODULE_1_styled_components___default.a.div`
+  background: linear-gradient(20deg, rgb(219, 112, 147), #daa357);
+`;
+
+//adjust different types of emails according to different conditions here:
+const MailContainer = props => {
+    console.log('type', props);
+    let content = false;
+    switch (props.type) {
+        case 'welcome':
+            content = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__emails_welcomeEmail__["a" /* default */], null);
+            break;
+    }
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        Container,
+        null,
+        content
+    );
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (MailContainer);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_header__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_footer__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_styled_components__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_styled_components___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_styled_components__);
 
@@ -177,22 +221,25 @@ const Content = __WEBPACK_IMPORTED_MODULE_3_styled_components___default.a.div`
     background-color: #fff;
     text-align: center;
 `;
-const WelcomeEmail = () => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-    Content,
-    null,
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__header__["a" /* default */], null),
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        'div',
+const WelcomeEmail = props => {
+    console.log('123', props);
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        Content,
         null,
-        'This is the content from email body'
-    ),
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__footer__["a" /* default */], null)
-);
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__common_header__["a" /* default */], null),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            null,
+            'This is the content from email body'
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__common_footer__["a" /* default */], null)
+    );
+};
 
 /* harmony default export */ __webpack_exports__["a"] = (WelcomeEmail);
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -200,7 +247,7 @@ const WelcomeEmail = () => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createE
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_styled_components__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_styled_components___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_styled_components__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__header_css__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__header_css__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__header_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__header_css__);
 
 
@@ -230,13 +277,13 @@ const Header = () => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement
 /* harmony default export */ __webpack_exports__["a"] = (Header);
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -293,13 +340,13 @@ const Footer = () => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement
 /* harmony default export */ __webpack_exports__["a"] = (Footer);
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /**
  * Html
- * This Html.js file acts as a template that we insert all our generated
+ * This html.js file acts as a template that we insert all our generated
  * application strings into before sending it to the client.
  */
 const Html = ({ body, styles, title }) => `
@@ -318,7 +365,7 @@ const Html = ({ body, styles, title }) => `
 /* harmony default export */ __webpack_exports__["a"] = (Html);
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -327,7 +374,7 @@ const Html = ({ body, styles, title }) => `
 
 //connect mailjet
 
-const mailjet = __webpack_require__(11).connect('7424f01cfba2096dec4ac26b2c5cc163', '2802ded507d359f077fbf0b0f4d3bc6d');
+const mailjet = __webpack_require__(12).connect('7424f01cfba2096dec4ac26b2c5cc163', '2802ded507d359f077fbf0b0f4d3bc6d');
 
 //send email by email jet
 exports.sendEmail = function (messageInfo, emailTemplate) {
@@ -342,10 +389,16 @@ exports.sendEmail = function (messageInfo, emailTemplate) {
 };
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = require("node-mailjet");
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = require("body-parser");
 
 /***/ })
 /******/ ]);
