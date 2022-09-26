@@ -25,7 +25,7 @@
     "ejs": "^2.6.1",
     "email-templates": "^4.0.1",
     "express": "^4.17.1",
-    "node-mailjet": "^3.2.1",
+    "node-mailjet": "^3.4.1",
     "nodemailer": "^4.6.7",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
